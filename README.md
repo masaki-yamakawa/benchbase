@@ -139,6 +139,25 @@ usage: oltpbenchmark
  -s,--sample <arg>              Sampling window
 ```
 
+## How to Run with Docker
+A Dockerfile has been provided for running benchbase without having to build the dependencies. To build the Docker image, run:
+```bash
+docker build -t benchbase .
+```
+This command builds the benchbase image with the tag `benchbase`. 
+
+To bring up help contents:
+```bash
+docker run benchbase
+```
+
+To execute the `tpcc` benchmark:
+```bash
+docker run -v ${PWD}/config:/app/config -v ${PWD}/results:/app/results benchbase -b tpcc -c config/postgres/sample_tpcc_config.xml --create=true --load=true --execute=true
+```
+All parameters must be passed in through the container. 
+This will run the image created above using the tag we provided, passing in the configuration file `sample_tpcc_config.xml` found in the `config` directory.
+
 ### How to Enable Logging
 To enable logging, e.g., for the PostgreSQL JDBC driver, add the following JVM property when starting...
 ```

@@ -10,5 +10,5 @@ services:
     volumes:
       - ./config:/app/config
       - ./results:/app/results
-    entrypoint: bash
+    entrypoint: ash
     command: ""

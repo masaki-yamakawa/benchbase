@@ -6,10 +6,11 @@ COPY . /build/
 WORKDIR /build
 RUN mvn clean package
 
-FROM openjdk:17-slim
+FROM openjdk:17-alpine3.14
 ENV BENCHBASE_VERSION=2021-SNAPSHOT
 COPY --from=builder /build/target/benchbase-${BENCHBASE_VERSION}.tgz .
-RUN tar xvzf benchbase-${BENCHBASE_VERSION}.tgz
+RUN tar xvzf benchbase-${BENCHBASE_VERSION}.tgz \
+  && rm -f benchbase-${BENCHBASE_VERSION}.tgz
 RUN mv /benchbase-${BENCHBASE_VERSION} /app
 WORKDIR /app
 ENTRYPOINT ["java","-jar","benchbase.jar"]

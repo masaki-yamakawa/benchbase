@@ -2,7 +2,7 @@
 <parameters>
 
     <!-- Connection details -->
-    <type>POSTGRES</type>
+    <type>YUGABYTE</type>
     <driver>com.yugabyte.Driver</driver>
     <url>jdbc:yugabytedb://host.docker.internal:5433/yugabyte?sslmode=disable&amp;ApplicationName=tpcc&amp;reWriteBatchedInserts=true&amp;load-balance=true</url>
     <username>yugabyte</username>

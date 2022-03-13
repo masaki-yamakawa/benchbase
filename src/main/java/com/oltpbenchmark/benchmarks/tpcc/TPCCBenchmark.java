@@ -80,7 +80,9 @@ public class TPCCBenchmark extends BenchmarkModule {
         final double terminalsPerWarehouse = (double) numTerminals / numWarehouses;
         int workerId = 0;
 
+        int counter = 0;
         for (int w = 0; w < numWarehouses; w++) {
+            counter++;
             // Compute the number of terminals in *this* warehouse
             int lowerTerminalId = (int) (w * terminalsPerWarehouse);
             int upperTerminalId = (int) ((w + 1) * terminalsPerWarehouse);
@@ -106,6 +108,9 @@ public class TPCCBenchmark extends BenchmarkModule {
 
                 TPCCWorker terminal = new TPCCWorker(this, workerId++, w_id, lowerDistrictId, upperDistrictId, numWarehouses);
                 terminals[lowerTerminalId + terminalId] = terminal;
+                if (counter % 50 == 0) {
+                    LOG.info(String.format("Created [%d / %d] terminals", counter, numWarehouseTerminals));
+                }
             }
 
         }

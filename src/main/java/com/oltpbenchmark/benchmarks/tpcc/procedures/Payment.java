@@ -115,21 +115,50 @@ public class Payment extends TPCCProcedure {
 
         float paymentAmount = (float) (TPCCUtil.randomNumber(100, 500000, gen) / 100.0);
 
+        long startTime = System.nanoTime();
         updateWarehouse(conn, w_id, paymentAmount);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Elapsed updateWarehouse=" + (System.nanoTime() - startTime));
+        }
 
+        startTime = System.nanoTime();
         Warehouse w = getWarehouse(conn, w_id);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Elapsed getWarehouse=" + (System.nanoTime() - startTime));
+        }
 
+        startTime = System.nanoTime();
         updateDistrict(conn, w_id, districtID, paymentAmount);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Elapsed updateDistrict=" + (System.nanoTime() - startTime));
+        }
 
+        startTime = System.nanoTime();
         District d = getDistrict(conn, w_id, districtID);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Elapsed getDistrict=" + (System.nanoTime() - startTime));
+        }
 
         int x = TPCCUtil.randomNumber(1, 100, gen);
 
+        startTime = System.nanoTime();
         int customerDistrictID = getCustomerDistrictId(gen, districtID, x);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Elapsed getCustomerDistrictId=" + (System.nanoTime() - startTime));
+        }
+        startTime = System.nanoTime();
         int customerWarehouseID = getCustomerWarehouseID(gen, w_id, numWarehouses, x);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Elapsed getCustomerWarehouseID=" + (System.nanoTime() - startTime));
+        }
 
+        startTime = System.nanoTime();
         Customer c = getCustomer(conn, gen, customerDistrictID, customerWarehouseID, paymentAmount);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Elapsed getCustomer=" + (System.nanoTime() - startTime));
+        }
 
+        startTime = System.nanoTime();
         if (c.c_credit.equals("BC")) {
             // bad credit
             c.c_data = getCData(conn, w_id, districtID, customerDistrictID, customerWarehouseID, paymentAmount, c);
@@ -142,8 +171,15 @@ public class Payment extends TPCCProcedure {
             updateBalance(conn, customerDistrictID, customerWarehouseID, c);
 
         }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Elapsed updateBalance=" + (System.nanoTime() - startTime));
+        }
 
+        startTime = System.nanoTime();
         insertHistory(conn, w_id, districtID, customerDistrictID, customerWarehouseID, paymentAmount, w.w_name, d.d_name, c);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Elapsed insertHistory=" + (System.nanoTime() - startTime));
+        }
 
         if (LOG.isTraceEnabled()) {
             StringBuilder terminalMessage = new StringBuilder();
